@@ -1,7 +1,11 @@
-# Reactant JS
+# Reactant — Reactive Pattern Design
 
-This project is intented to be a small and ligthweight reactive library.
+This project is intented to be a small and ligthweight “reactive” library. I believe the “new” paradigm recently called “reactive programming” is amazing. It makes code beautiful, orginized and easy to read.
 
-I believe the “new” paradigm recently called “reactive programming” is a good one. It makes code beautiful orginized and easy to read. I also think is not fair to be force into a big, slow and complex library, so I created this little fella for small projects to get the benefits of _pure reactive components_, without the drag of using a ridiculous transpiler.
+I also think is not fair to be force into a big/complex library, so I created this little fella for really small projects.
 
-**Disclaimer:** This is project is not yet production-ready.
+## Why are you losing your time?
+
+Don't know. I want to see if I can implement something that feels like doing chemistry.
+
+**Note**: This library is NOT yet production-ready.

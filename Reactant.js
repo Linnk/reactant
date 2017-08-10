@@ -3,51 +3,68 @@
 
 class Reactant
 {
-	constructor()
+	constructor(options)
 	{
-		var state = {}
-		var state_stringified = JSON.stringify(state)
+		Object.defineProperty(this, '$data', {
+			writable: false,
+			value: options.data || {}
+		});
+		Object.defineProperty(this, '$watch', {
+			writable: false,
+			value: options.watch || {}
+		});
 
-		Object.defineProperty(this, 'state', {
-			enumerable: false,
-			configurable: false,
+		Reactant.initialize(this, this.$data)
+	}
+
+	static initialize(reactant, data)
+	{
+		for (let key in data) if (data.hasOwnProperty(key))
+		{
+			if (Reactant.isObservable(data[key]))
+			{
+				Reactant.set(reactant, key)
+			}
+		}
+	}
+
+	static isObservable(property)
+	{
+		var scalar_types = {
+			'undefined': true,
+			'boolean': true,
+			'number': true,
+			'string': true
+		}
+
+		let type = typeof property
+
+		return scalar_types[type] || (type === 'object' && (property === null || Array.isArray(property)))
+	}
+
+	static set(reactant, key)
+	{
+		Object.defineProperty(reactant, key, {
 			get: () =>
 			{
-				return state
+				return reactant.$data[key]
 			},
 			set: (new_value) =>
 			{
-				var new_state_stringified = JSON.stringify(new_value)
-				if (state_stringified === new_state_stringified)
+				if (reactant.$data[key] !== new_value)
 				{
-					return;
+					let old_value = reactant.$data[key]
+
+					reactant.$data[key] = new_value
+
+					if (typeof reactant.$watch[key] === 'function')
+					{
+						reactant.$watch[key].call(reactant, new_value, old_value)
+					}
 				}
-
-				var old_value = state
-
-				state = new_value
-				state_stringified = new_state_stringified
-
-				this.didSetState(old_value)
-			},
+			}
 		});
 	}
-
-	didSetState(old_value)
-	{
-		console.log('----------------------------')
-		console.log(old_value)
-		console.log(this.state)
-	}
-
-
 }
 
-var r = new Reactant()
-
-r.state = {hola: 'mundo'}
-r.state = {hola: 'mundo_1'}
-r.state = {hola: 'mundo_1'}
-r.state = {hola: 'mundo_1'}
-r.state = {hola: 'mundo_1'}
-r.state = {hola: 'mundo_2'}
+module.exports = Reactant
